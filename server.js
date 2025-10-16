@@ -7,6 +7,7 @@ import { hash, compare } from "bcrypt";
 import { authMiddleware } from "./middleware/auth-middleware.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { commentModel } from "./Schema/comment.schema.js";
 
 dotenv.config();
 const app = express();
@@ -147,7 +148,7 @@ app.get("/profileHeader/:userId", async (req, res) => {
   if (userData) {
     res.status(200).json(userData);
   } else {
-    res.status(400).json({ message: "alda garal" });
+    res.status(400).json({ message: "alda garla" });
   }
 });
 
@@ -190,8 +191,34 @@ app.post("/toggle-like/:postId", authMiddleware, async (req, res) => {
   res.status(200).json({ message: "amjilttai like darlaa" });
 });
 
+app.post("/comment", authMiddleware, async (req, res) => {
+  const userId = req.user._id;
+  const { comment, postId } = req.body;
 
+  const createdComment = await commentModel.create({
+    user: userId,
+    post: postId,
+    comment,
+  });
 
+  res.status(200).json(createdComment);
+});
+
+app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
+  const postId = req.params.postId;
+
+  const comments = await commentModel
+    .find({
+      post: postId,
+    })
+    .populate({
+      path: "post",
+      populate: { path: "user", select: "username profilePicture" },
+    })
+    .populate("user", "username profilePicture");
+
+  res.status(200).json(comments);
+});
 app.listen(Port, () => {
   console.log("server is running on http://localhost/" + Port);
 });

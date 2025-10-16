@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const postType = new mongoose.Schema({
   like: [{ type: Schema.Types.ObjectId, required: true }],
   images: [{ type: String, required: true }],
-  comment: [{ type: Schema.Types.ObjectId, required: true }],
+  comments: [{ type: Schema.Types.ObjectId, ref: "comments" }],
   user: { type: Schema.Types.ObjectId, ref: "users", required: true },
   caption: { type: String, required: true },
   createdAt: { type: Date, default: Date.now() },
