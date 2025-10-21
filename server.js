@@ -72,6 +72,10 @@ app.get("/profilePost", authMiddleware, async (req, res) => {
   res.status(200).json(posts);
 });
 
+// app.get("/nocomment/:postId" , authMiddleware, async (req,res) => {
+//   const postId = req.params.postId
+
+// })
 app.post("/login", async (req, res) => {
   const body = req.body;
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -207,6 +211,19 @@ app.post("/comment", authMiddleware, async (req, res) => {
 app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
   const postId = req.params.postId;
 
+  // const isComment = await commentModel.includes(postId)
+  //  const post = await postModel.findById(postId);
+
+  // const postComment = post.comments;
+  // if(isComment) {
+  //     await postModel.findByIdAndUpdate(postId, {
+  //     comment: [...postComment, postId]
+  //   });
+  // } else {
+  //   await postModel.findByIdAndUpdate(postId, {
+  //     comment: [...postLike, user._id],
+  //   });
+  // }
   const comments = await commentModel
     .find({
       post: postId,
@@ -219,6 +236,25 @@ app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
 
   res.status(200).json(comments);
 });
+
+app.get("/searchUsers/:searchParam", authMiddleware, async (req, res) => {
+  const searchParam = req.params.searchParam;
+
+  const users = await userModel.find({
+    username: new RegExp(searchParam, "i"),
+  });
+  res.status(200).json(users);
+});
+
+app.get("/userPostyee/:postId", authMiddleware, async (req, res) => {
+  const postId = req.params.postId;
+  console.log(postId, "id");
+  const post = await postModel
+    .findById({ _id: postId })
+    .populate({ path: "user" });
+  res.status(200).json(post);
+});
+
 app.listen(Port, () => {
   console.log("server is running on http://localhost/" + Port);
 });
