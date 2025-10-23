@@ -72,10 +72,6 @@ app.get("/profilePost", authMiddleware, async (req, res) => {
   res.status(200).json(posts);
 });
 
-// app.get("/nocomment/:postId" , authMiddleware, async (req,res) => {
-//   const postId = req.params.postId
-
-// })
 app.post("/login", async (req, res) => {
   const body = req.body;
   const JWT_SECRET = process.env.JWT_SECRET;
@@ -248,11 +244,33 @@ app.get("/searchUsers/:searchParam", authMiddleware, async (req, res) => {
 
 app.get("/userPostyee/:postId", authMiddleware, async (req, res) => {
   const postId = req.params.postId;
-  console.log(postId, "id");
+
   const post = await postModel
     .findById({ _id: postId })
     .populate({ path: "user" });
   res.status(200).json(post);
+});
+
+app.get("/editUserdata/:userId", authMiddleware, async (req, res) => {
+  const userId = req.params.userId;
+  const user = await userModel.findById({ _id: userId });
+  res.status(200).json(user);
+});
+
+app.post("/editUserProfile", authMiddleware, async (req, res) => {
+  const userId = req.body._id;
+  const body = req.body;
+  const { username, bio } = body;
+
+  await userModel.findByIdAndUpdate(userId, {
+    username: username,
+    bio: bio,
+  });
+
+  console.log(userId);
+  console.log(body, "body");
+
+  res.status(200).json({ message: "amjiltta soligdloo" });
 });
 
 app.listen(Port, () => {
