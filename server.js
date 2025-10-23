@@ -194,7 +194,6 @@ app.post("/toggle-like/:postId", authMiddleware, async (req, res) => {
 app.post("/comment", authMiddleware, async (req, res) => {
   const userId = req.user._id;
   const { comment, postId } = req.body;
-
   const createdComment = await commentModel.create({
     user: userId,
     post: postId,
@@ -204,23 +203,29 @@ app.post("/comment", authMiddleware, async (req, res) => {
   res.status(200).json(createdComment);
 });
 
+// app.post("/comments/:postId", authMiddleware, async (req, res) => {
+//   const postId = req.params.postId;
+//   console.log(postId);
+//   const comModelpostId = (await commentModel.find({ post: postId })).includes();
+
+//   const post = await postModel.findById(postId);
+//   const postComment = post.comments;
+//   if (!comModelpostId) {
+//     await postModel.findByIdAndUpdate(postId, {
+//       comment: [...postComment, postId],
+//     });
+//   } else {
+//     await postModel.findByIdAndUpdate(postId, {
+//       comment: [...postComment, postId],
+//     });
+//   }
+
+//   res.status(200).json({ message: "success" });
+// });
+
 app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
   const postId = req.params.postId;
-
-  // const isComment = await commentModel.includes(postId)
-  //  const post = await postModel.findById(postId);
-
-  // const postComment = post.comments;
-  // if(isComment) {
-  //     await postModel.findByIdAndUpdate(postId, {
-  //     comment: [...postComment, postId]
-  //   });
-  // } else {
-  //   await postModel.findByIdAndUpdate(postId, {
-  //     comment: [...postLike, user._id],
-  //   });
-  // }
-  const comments = await commentModel
+  const comment = await commentModel
     .find({
       post: postId,
     })
@@ -230,7 +235,7 @@ app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
     })
     .populate("user", "username profilePicture");
 
-  res.status(200).json(comments);
+  res.status(200).json(comment);
 });
 
 app.get("/searchUsers/:searchParam", authMiddleware, async (req, res) => {
@@ -273,6 +278,23 @@ app.post("/editUserProfile", authMiddleware, async (req, res) => {
   res.status(200).json({ message: "amjiltta soligdloo" });
 });
 
+app.delete("/userPostDelete/:postId", authMiddleware, async (req, res) => {
+  const postId = req.params.postId;
+
+  const post = await postModel.findById(postId);
+
+  await postModel.findByIdAndDelete(postId);
+
+  res.status(200).json({ message: "amjilttai ustaglaa" });
+});
+
+app.delete(
+  "/postCommentDelete/:commentId",
+  authMiddleware,
+  async (req, res) => {
+    const commentId = req.params.commentId;
+  }
+);
 app.listen(Port, () => {
   console.log("server is running on http://localhost/" + Port);
 });
