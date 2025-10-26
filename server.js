@@ -265,19 +265,28 @@ app.get("/editUserdata/:userId", authMiddleware, async (req, res) => {
 app.post("/editUserProfile", authMiddleware, async (req, res) => {
   const userId = req.body._id;
   const body = req.body;
-  const { username, bio } = body;
+  const { username, bio, profilePicture } = body;
 
   await userModel.findByIdAndUpdate(userId, {
     username: username,
     bio: bio,
+    profilePicture: profilePicture,
   });
 
-  console.log(userId);
-  console.log(body, "body");
-
-  res.status(200).json({ message: "amjiltta soligdloo" });
+  res.status(200).json({ message: "amjiltta bro soligdloo" });
 });
 
+app.post("/editProfilePicture", authMiddleware, async (req, res) => {
+  const userId = req.body._id;
+  const body = req.body;
+  const { profilePicture } = body;
+
+  await userModel.findByIdAndUpdate(userId, {
+    profilePicture: profilePicture,
+  });
+
+  res.status(200).json({ message: "picture amjiltta soligdloo" });
+});
 app.delete("/userPostDelete/:postId", authMiddleware, async (req, res) => {
   const postId = req.params.postId;
 
