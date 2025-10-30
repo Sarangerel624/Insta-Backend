@@ -203,26 +203,6 @@ app.post("/comment", authMiddleware, async (req, res) => {
   res.status(200).json(createdComment);
 });
 
-// app.post("/comments/:postId", authMiddleware, async (req, res) => {
-//   const postId = req.params.postId;
-//   console.log(postId);
-//   const comModelpostId = (await commentModel.find({ post: postId })).includes();
-
-//   const post = await postModel.findById(postId);
-//   const postComment = post.comments;
-//   if (!comModelpostId) {
-//     await postModel.findByIdAndUpdate(postId, {
-//       comment: [...postComment, postId],
-//     });
-//   } else {
-//     await postModel.findByIdAndUpdate(postId, {
-//       comment: [...postComment, postId],
-//     });
-//   }
-
-//   res.status(200).json({ message: "success" });
-// });
-
 app.get("/getPosts/:postId", authMiddleware, async (req, res) => {
   const postId = req.params.postId;
   const comment = await commentModel
@@ -297,13 +277,33 @@ app.delete("/userPostDelete/:postId", authMiddleware, async (req, res) => {
   res.status(200).json({ message: "amjilttai ustaglaa" });
 });
 
-app.delete(
-  "/postCommentDelete/:commentId",
-  authMiddleware,
-  async (req, res) => {
-    const commentId = req.params.commentId;
-  }
-);
+app.delete("/deleteComment", authMiddleware, async (req, res) => {
+  const body = req.body;
+  const { _id } = body;
+
+  await commentModel.findByIdAndDelete({ _id: _id });
+
+  res.status(200).json({ message: "comment ustaglaa" });
+});
+
+// app.delete(
+//   "/postCommentDelete/:commentId",
+//   authMiddleware,
+//   async (req, res) => {
+//     const commentId = req.params.commentId;
+//   }
+// );
+
+app.post("/editComment", authMiddleware, async (req, res) => {
+  const body = req.body;
+  const { _id, newComment } = body;
+
+  await commentModel.findByIdAndUpdate(_id, {
+    comment: newComment,
+  });
+
+  res.status(200).json({ message: "comment amjilttai soligdlo" });
+});
 app.listen(Port, () => {
   console.log("server is running on http://localhost/" + Port);
 });
