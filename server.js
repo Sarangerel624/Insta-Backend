@@ -286,14 +286,6 @@ app.delete("/deleteComment", authMiddleware, async (req, res) => {
   res.status(200).json({ message: "comment ustaglaa" });
 });
 
-// app.delete(
-//   "/postCommentDelete/:commentId",
-//   authMiddleware,
-//   async (req, res) => {
-//     const commentId = req.params.commentId;
-//   }
-// );
-
 app.post("/editComment", authMiddleware, async (req, res) => {
   const body = req.body;
   const { _id, newComment } = body;
@@ -303,6 +295,10 @@ app.post("/editComment", authMiddleware, async (req, res) => {
   });
 
   res.status(200).json({ message: "comment amjilttai soligdlo" });
+});
+
+app.get("/", (req, res) => {
+  res.status(200).send("server is working!!");
 });
 app.listen(Port, () => {
   console.log("server is running on http://localhost/" + Port);
